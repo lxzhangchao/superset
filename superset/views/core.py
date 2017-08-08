@@ -2290,6 +2290,13 @@ class Superset(BaseSupersetView):
             'superset/sqllab.html',
             bootstrap_data=json.dumps(d, default=utils.json_iso_dttm_ser)
         )
+    
+    @has_access
+    @expose("/rest/api/get_locale", methods=['GET', 'POST'])
+    def get_locale(self):
+        return json_success(json.dumps({
+            'language': str(get_locale()),
+        }))
 appbuilder.add_view_no_menu(Superset)
 
 
