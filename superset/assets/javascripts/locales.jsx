@@ -4,8 +4,8 @@ import React from 'react';
 import { sprintf } from 'sprintf-js';
 import { getLanguage } from './explore/stores/getLanguage';
 
-export function getTranslations(language) {
-  const ctx = require(`../../translations/${language}/LC_MESSAGES/messages.po`);
+export function getTranslationsJson(language) {
+  const ctx = require(`../../translations/${language}/LC_MESSAGES/messages.json`);
   const translations = {};
   translations[language] = ctx;
   return translations[language];
@@ -14,11 +14,11 @@ export function getTranslations(language) {
 let i18n = null;
 
 export function setLocale(locale) {
-  const translations = getTranslations(locale);
+  const translations = getTranslationsJson(locale);
   i18n = new Jed({
     domain: 'superset',
     locale_data: {
-      superset: translations,
+      superset: translations.locale_data.superset,
     },
   });
 }
@@ -26,7 +26,6 @@ export function setLocale(locale) {
 setLocale(getLanguage());
 
 function formatForReact(formatString, args) {
-  console.log('formatForReact');
   const rv = [];
   let cursor = 0;
   sprintf.parse(formatString).forEach((match, idx) => {
@@ -136,13 +135,6 @@ export function renderComponentTemplate(template, components) {
     return React.cloneElement(reference, { key: idx++ });
   }
   return renderGroup('root');
-}
-
-function isArrayFn(value) {
-  if (typeof Array.isArray === 'function') {
-    return Array.isArray(value);
-  }
-  return Object.prototype.toString.call(value) === '[object Array]';
 }
 
 export function format(formatString, args) {
